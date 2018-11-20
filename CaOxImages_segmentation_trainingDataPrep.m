@@ -1,8 +1,13 @@
-%CaOx images 20x - segmentation optimization - noise reduction 2018/05/28
+%CaOx images 20x - segmentation optimization - noise reduction 2018/05/28 and manual classificaiton
+%preparation of training data for CaOx classification
+
+%create Training data with shape, intensity and texture features
+
+%segmentation advice:
 %reduce structuring element for wathershed based on intensities from 6
 %-->5 for high particle number/touching images
 
-%create Training data with shape, intensity and texture features
+
 
 %% ---INITIALIZATION---
 clear variables
@@ -19,14 +24,14 @@ imshow (I);
 %% ---detect edges---
 Ismooth = imgaussfilt(I,1.4);
 figure (1), imshow (Ismooth);
-threshold = 0.03; % edge detection % edge detection
+threshold = 0.03; % edge detection 
 fudgeFactor = 0.5;
 BWs = edge(Ismooth,'sobel', threshold * fudgeFactor); %make binary image of edges
 figure (2), imshow(BWs), title('binary gradient mask');
 
 
 %% --- morphologically close image and fill holes--
-se = strel('disk',4,4); % structuring element r=2; lines =4
+se = strel('disk',4,4); % structuring element r; lines 
 closeBW = imclose(BWs,se); % close edges
 figure (3), imshow(closeBW), title ('morphological closed edges');
 
@@ -136,7 +141,6 @@ figure (20), imshow (CaOxmaskFinal), title ('CaOx mask final');
 
 for k= 1:count % crop image to subimage/particle and store in cell array
    singleObjects {k} = imcrop (CaOxmaskFinal, boundingBox (k,:));
-  
 end
 
 
@@ -205,10 +209,6 @@ class = CaOxArea <500; %classify COM from CaOx by choosing one feature, based on
 
 
 class1 = double (class);
-%class1 (class1 == 1) = 2;
-%class1 (class1 == 0) = 3;
-
-%class1 (class1 ==0) = 3;
 
 
 
@@ -234,7 +234,7 @@ Brod = B2 (class1 == 2);
 Bdirt = B2 (class1 ==3);
 
 
-figure (22) , imshow(I), title ('classified objects');
+figure (22) , imshow(I), title ('classified objects'); % plot classification of segmented crystals on original image
 hold on
 text(CaOxcentroid(:,1), CaOxcentroid (:,2), num2str(class1,1), 'color', 'black', 'fontsize',10);
 hold on 
@@ -261,8 +261,7 @@ end
 %% --- create categorial array with features ---
 % arrange feature descriptors with COM/COD classification in table
 % this table (combined from all training images) is used as the input for
-% supervised classification (use classification learner app
+% supervised classification (use classification learner app)
 featuresAll = [class1 CaOxVariance, CaOxMeanInt, CaOxMinInt, CaOxMaxInt, CaOxIntDist, CaOxArea, CaOxPerimeter, CaOxEccentricity, CaOxMajorAxis, CaOxMinorAxis, CaOxcircularity, CaOxcorrelation, CaOxhomogeneity, CaOxenergy, CaOxcontrast]; % COM distinguishes if COM or COD; 
 featuresAll1 = array2table (featuresAll, 'VariableNames', {'class' 'variance' 'MeanInt' 'MinInt' 'MaxInt' 'IntDis' 'area' 'perimeter' 'eccentricity' 'majorAxis' 'minorAxis' 'circularity' 'correlation' 'homogeneity' 'energy' 'contrast'});
 writetable (featuresAll1, 'Classification09_exp09_NaOx_w205_train.csv');
-
