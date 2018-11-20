@@ -5,4 +5,4 @@ code for CaOx crystal image segmentation and classification
 
 -function for batch processing  of 20x images - segmentation and classification of CaOx particles; to be used with batch processing app
 
--function for trainedClassifier
+-function for the trained Classifier used in this work
