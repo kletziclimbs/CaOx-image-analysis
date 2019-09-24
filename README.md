@@ -5,9 +5,9 @@ the following functions/scripts are included:
 
 - function for batch processing  of 20x images - segmentation and classification of CaOx particles; to be used with batch processing app:
 CaOxmicroscopy_classification09_20180528_batch.m
-I = input images
 
-in case of new images, a new classifier might need to be trained
+
+in case of new experimental data, a new classifier should be trained
 
 - function for the trained Classifier used in this work
 
